@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 # OpenAgent Lab
 
 **An Open-Source AI Agent Evaluation, Reliability and Observability Platform**
@@ -98,4 +100,10 @@ The core application will use local inference and open-source software. Paid LLM
 - Keep experiments reproducible.
 - Apply least-privilege access to agent tools.
 - Document trade-offs and known limitations.
-- Never commit secrets or local model artifacts.
+- # Never commit secrets or local model artifacts.
+
+# OpenAgent-Lab
+
+AI agent evaluation, reliability, MLOps and AgentOps platform
+
+> > > > > > > origin/main
