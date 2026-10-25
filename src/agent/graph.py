@@ -1,11 +1,13 @@
 from typing_extensions import TypedDict
 from langgraph.graph import END, START, StateGraph
+from src.llm_client import generate_response
 
 
 class TaskState(TypedDict):
     task: str
     result: str
     priority: str
+    llm_response: str
 
 
 def process_task(state: TaskState) -> dict:
@@ -16,6 +18,12 @@ def process_task(state: TaskState) -> dict:
         "priority": (
             "urgent" if "urgent" in task.lower() else "normal"
         ),
+    }
+def llm_node(state: TaskState) -> dict:
+    response = generate_response(state["task"])
+
+    return {
+        "llm_response": response
     }
 
 
@@ -32,6 +40,15 @@ def urgent_handler(state: TaskState) -> dict:
 
 def normal_handler(state: TaskState) -> dict:
     return {"result": "Normal task handled"}
+
+llm_builder = StateGraph(TaskState)
+
+llm_builder.add_node("llm_node", llm_node)
+
+llm_builder.add_edge(START, "llm_node")
+llm_builder.add_edge("llm_node", END)
+
+llm_graph = llm_builder.compile()
 
 
 builder = StateGraph(TaskState)
@@ -58,10 +75,11 @@ graph = builder.compile()
 
 
 if __name__ == "__main__":
-    output = graph.invoke({
-        "task": "URGENT: Fix login",
-        "result": "Pending",
+    output = llm_graph.invoke({
+        "task": "Explain an AI agent in two sentences.",
+        "result": "",
         "priority": "normal",
+        "llm_response": "",
     })
 
-    print(output)
+    print(output["llm_response"])
